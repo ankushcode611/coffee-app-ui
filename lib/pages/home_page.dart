@@ -1,16 +1,38 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:coffeeappui/util/coffee_tile.dart';
+import 'package:coffeeappui/util/coffee_type.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  // List of coffee types
+  final List coffeeTypes = [
+    // [ coffee type, isSelected ]
+    ['Cappuccino', true],
+    ['Latte', false],
+    ['Black', false],
+    ['Tea', false],
+  ];
+
+  // User tapped on coffee types
+  void coffeeTypeSelected(int index) {
+    setState(() {
+      //this for loop makes every selection false
+      for (int i = 0; i < coffeeTypes.length; i++) {
+        coffeeTypes[i][1] = false;
+      }
+      coffeeTypes[index][1] = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,23 +48,25 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'favourite',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'notifications',
-        ),
-      ]),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+        ],
+      ),
       body: Column(
         children: [
-          //fig the best coffee for you
+          // Find the best coffee for you
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: Text(
@@ -52,12 +76,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
-          SizedBox(
-            height: 25,
-          ),
-          //search bar
-
+          SizedBox(height: 25),
+          // Search bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
             child: TextField(
@@ -73,17 +93,48 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
-          SizedBox(
-            height: 25,
+          SizedBox(height: 25),
+          // Horizontal list view of coffee types
+          Container(
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: coffeeTypes.length,
+              itemBuilder: (context, index) {
+                return CoffeeType(
+                  coffeeType: coffeeTypes[index][0],
+                  isSelected: coffeeTypes[index][1],
+                  onTap: () {
+                    coffeeTypeSelected(index);
+                  },
+                );
+              },
+            ),
           ),
-          //horizonatal listview of coffee
-
+          SizedBox(height: 25),
+          // Horizontal list view of coffee
           Expanded(
-              child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [],
-          ))
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                CoffeeTile(
+                  coffeeImagePath: 'lib/images/latte.jpg',
+                  coffeeName: 'latte',
+                  coffeePrice: '4.20',
+                ),
+                CoffeeTile(
+                  coffeeImagePath: 'lib/images/cappucino.jpg',
+                  coffeeName: 'latte',
+                  coffeePrice: '4.10',
+                ),
+                CoffeeTile(
+                  coffeeImagePath: 'lib/images/milk.jpg',
+                  coffeeName: 'milk',
+                  coffeePrice: '4.5',
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
